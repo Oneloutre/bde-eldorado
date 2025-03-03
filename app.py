@@ -11,5 +11,9 @@ def hello_world():  # put application's code here
 def page_not_found(e):
     return render_template('404.html'), 404
 
+@app.route('/easteregg')
+def easteregg():
+    return render_template('easteregg.html')
+
 if __name__ == '__main__':
     app.run()

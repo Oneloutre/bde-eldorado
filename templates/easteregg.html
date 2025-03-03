@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easter Egg - L'Eldorado BDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c5e1a;
+            --primary-light: #4a7c3a;
+            --primary-dark: #1a3c10;
+            --primary-accent: #8fb580;
+            --gold: #ffd700;
+            --dark: #1a1a1a;
+            --white: #ffffff;
+            --cream: #f8f5e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--cream);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        #game-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            background-color: var(--primary-light);
+            border: 4px solid var(--primary-dark);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        #game-canvas {
+            display: block;
+        }
+
+        #score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(44, 94, 26, 0.3);
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(44, 94, 26, 0.4);
+        }
+
+        .trees {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%232c5e1a" fill-opacity="0.3" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,229.3C672,224,768,192,864,181.3C960,171,1056,181,1152,181.3C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') repeat-x bottom;
+            background-size: 100% 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Félicitations, aventurier !</h1>
+        <p>Vous avez découvert le jeu secret de L'Eldorado. Guidez le serpent vers notre logo !</p>
+        <div id="game-container">
+            <canvas id="game-canvas" width="400" height="400"></canvas>
+        </div>
+        <div id="score">Score: 0</div>
+        <button class="btn" id="start-btn">Commencer le jeu</button>
+        <a href="/" class="btn">Retour à l'accueil</a>
+    </div>
+    <div class="trees"></div>
+
+    <script>
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const startBtn = document.getElementById('start-btn');
+
+        const gridSize = 20;
+        const tileCount = canvas.width / gridSize;
+
+        let snake = [
+            {x: 10, y: 10},
+            {x: 9, y: 10},
+            {x: 8, y: 10}
+        ];
+        let dx = 1;
+        let dy = 0;
+
+        let logoX = 15;
+        let logoY = 15;
+
+        let score = 0;
+        let gameLoop;
+
+        const logoImg = new Image();
+        logoImg.src = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logo_-UgK7yImD4iPLKpiMD9kPCoAcXuHXem.png';
+
+        function drawGame() {
+            clearCanvas();
+            moveSnake();
+            drawSnake();
+            drawLogo();
+            checkCollision();
+        }
+
+        function clearCanvas() {
+            ctx.fillStyle = '#4a7c3a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function moveSnake() {
+            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+            snake.unshift(head);
+
+            if (head.x === logoX && head.y === logoY) {
+                score++;
+                scoreElement.textContent = `Score: ${score}`;
+                placeLogoRandomly();
+            } else {
+                snake.pop();
+            }
+        }
+
+        function drawSnake() {
+            ctx.fillStyle = '#ffd700';
+            snake.forEach(segment => {
+                ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize - 2, gridSize - 2);
+            });
+        }
+
+        function drawLogo() {
+            ctx.drawImage(logoImg, logoX * gridSize, logoY * gridSize, gridSize, gridSize);
+        }
+
+        function placeLogoRandomly() {
+            logoX = Math.floor(Math.random() * tileCount);
+            logoY = Math.floor(Math.random() * tileCount);
+        }
+
+        function checkCollision() {
+            const head = snake[0];
+
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+                gameOver();
+            }
+
+            for (let i = 1; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    gameOver();
+                }
+            }
+        }
+
+        function gameOver() {
+            clearInterval(gameLoop);
+            alert(`Game Over! Votre score: ${score}`);
+            startBtn.style.display = 'inline-block';
+        }
+
+        function changeDirection(e) {
+            const LEFT_KEY = 37;
+            const RIGHT_KEY = 39;
+            const UP_KEY = 38;
+            const DOWN_KEY = 40;
+
+            const keyPressed = e.keyCode;
+
+            const goingUp = dy === -1;
+            const goingDown = dy === 1;
+            const goingRight = dx === 1;
+            const goingLeft = dx === -1;
+
+            if (keyPressed === LEFT_KEY && !goingRight) {
+                dx = -1;
+                dy = 0;
+            }
+
+            if (keyPressed === UP_KEY && !goingDown) {
+                dx = 0;
+                dy = -1;
+            }
+
+            if (keyPressed === RIGHT_KEY && !goingLeft) {
+                dx = 1;
+                dy = 0;
+            }
+
+            if (keyPressed === DOWN_KEY && !goingUp) {
+                dx = 0;
+                dy = 1;
+            }
+        }
+
+        function startGame() {
+            snake = [
+                {x: 10, y: 10},
+                {x: 9, y: 10},
+                {x: 8, y: 10}
+            ];
+            dx = 1;
+            dy = 0;
+            score = 0;
+            scoreElement.textContent = 'Score: 0';
+            placeLogoRandomly();
+            startBtn.style.display = 'none';
+            gameLoop = setInterval(drawGame, 100);
+        }
+
+        document.addEventListener('keydown', changeDirection);
+        startBtn.addEventListener('click', startGame);
+
+        // Easter egg : Konami Code
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    alert('Code secret activé ! Votre serpent est maintenant plus rapide !');
+                    clearInterval(gameLoop);
+                    gameLoop = setInterval(drawGame, 50);
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+
+        logoImg.onload = () => {
+            drawGame();
+        };
+    </script>
+</body>
+</html>
