@@ -3,5 +3,4 @@ charset-normalizer==3.4.1
 idna==3.10
 requests==2.32.3
 urllib3==2.3.0
-wheel @ file:///opt/homebrew/Cellar/python%403.13/3.13.1/libexec/wheel-0.45.1-py3-none-any.whl#sha256=da46333d5dcbde6e20cf7e2f8fff9e9ce76e8c94dc4afd6fb95fc4bc2745fb5e
 flask==3.1.0
