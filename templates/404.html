@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Non Trouvée | L'Eldorado BDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c5e1a;
+            --primary-light: #4a7c3a;
+            --primary-dark: #1a3c10;
+            --primary-accent: #8fb580;
+            --dark: #1a1a1a;
+            --white: #ffffff;
+            --cream: #f8f5e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--cream);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--primary-dark);
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(44, 94, 26, 0.3);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(44, 94, 26, 0.4);
+        }
+
+        .forest {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%232c5e1a" fill-opacity="0.3" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,229.3C672,224,768,192,864,181.3C960,171,1056,181,1152,181.3C1248,181,1344,171,1392,165.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+
+        .compass {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 30px;
+            animation: spin 20s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 6rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .forest {
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <svg class="compass" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#2c5e1a" stroke-width="2"/>
+            <path d="M50 5 L45 50 L50 95 L55 50 Z" fill="#2c5e1a">
+                <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 50 50" to="360 50 50" dur="20s" repeatCount="indefinite"/>
+            </path>
+            <circle cx="50" cy="50" r="5" fill="#2c5e1a"/>
+        </svg>
+        <h1>404</h1>
+        <h2>Oups ! Vous vous êtes perdu dans la forêt.</h2>
+        <p>La page que vous recherchez semble avoir disparu dans les bois. Pas de panique, notre boussole vous guidera vers le bon chemin !</p>
+        <a href="/" class="btn">Retour à l'accueil</a>
+    </div>
+    <div class="forest"></div>
+
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            const compass = document.querySelector('.compass');
+            const rect = compass.getBoundingClientRect();
+            const compassCenterX = rect.left + rect.width / 2;
+            const compassCenterY = rect.top + rect.height / 2;
+
+            const angle = Math.atan2(e.clientY - compassCenterY, e.clientX - compassCenterX);
+            compass.style.transform = `rotate(${angle * (180 / Math.PI)}deg)`;
+        });
+    </script>
+</body>
+</html>
