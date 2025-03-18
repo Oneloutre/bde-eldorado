@@ -15,5 +15,13 @@ def page_not_found(e):
 def easteregg():
     return render_template('easteregg.html')
 
+@app.route('/sponsors')
+def sponsors():
+    return render_template('sponsors.html')
+
+@app.route('/mentions-legales')
+def mentions():
+    return render_template('mentions-legales.html')
+
 if __name__ == '__main__':
-    app.run()
+    app.run(port=8000)
