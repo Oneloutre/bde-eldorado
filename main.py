@@ -23,5 +23,7 @@ def sponsors():
 def mentions():
     return render_template('mentions-legales.html')
 
-if __name__ == '__main__':
+def run_website():
     app.run(port=8000)
+
+run_website()
